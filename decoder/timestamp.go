@@ -16,7 +16,7 @@ func (d *UnixTimeStampDecoder) Sniffer(text string) Possibility {
 		return Impossible
 	}
 	//the recent years timestamp are 10 digits
-	if len(text) != 9 {
+	if len(text) != 10 {
 		return AlmostImpossible
 	}
 	if strings.HasPrefix(text, "15") {

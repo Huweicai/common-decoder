@@ -15,7 +15,7 @@ func (d *UnixTimeStampNanoDecoder) Sniffer(text string) Possibility {
 	if err != nil {
 		return Impossible
 	}
-	if len(text) != 15 {
+	if len(text) != 16 {
 		return AlmostImpossible
 	}
 	if strings.HasPrefix(text, "15") {
