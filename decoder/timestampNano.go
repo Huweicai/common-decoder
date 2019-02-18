@@ -11,6 +11,7 @@ type UnixTimeStampNanoDecoder struct {
 }
 
 func (d *UnixTimeStampNanoDecoder) Sniffer(text string) Possibility {
+	text = commonTimestampPreHanle(text)
 	_, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
 		return Impossible
@@ -24,6 +25,7 @@ func (d *UnixTimeStampNanoDecoder) Sniffer(text string) Possibility {
 	return NotSure
 }
 func (d *UnixTimeStampNanoDecoder) Decode(text string) (result string, ok bool) {
+	text = commonTimestampPreHanle(text)
 	i, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
 		log.Println(text, err.Error())

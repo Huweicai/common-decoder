@@ -11,6 +11,7 @@ type UnixTimeStampDecoder struct {
 }
 
 func (d *UnixTimeStampDecoder) Sniffer(text string) Possibility {
+	text = commonTimestampPreHanle(text)
 	_, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
 		return Impossible
@@ -25,6 +26,7 @@ func (d *UnixTimeStampDecoder) Sniffer(text string) Possibility {
 	return NotSure
 }
 func (d *UnixTimeStampDecoder) Decode(text string) (result string, ok bool) {
+	text = commonTimestampPreHanle(text)
 	i, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
 		log.Println(text, err.Error())
@@ -36,4 +38,10 @@ func (d *UnixTimeStampDecoder) Decode(text string) (result string, ok bool) {
 
 func (d *UnixTimeStampDecoder) Encode(text string) (result string, ok bool) {
 	return "", false
+}
+
+func commonTimestampPreHanle(text string) string {
+	//timestamp may be divided by "," , such as 1,550,468,552
+	text = strings.Replace(text, ",", "", -1)
+	return text
 }
