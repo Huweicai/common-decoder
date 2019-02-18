@@ -9,10 +9,10 @@ type URLDecoder struct {
 }
 
 func (d *URLDecoder) Sniffer(text string) Possibility {
-	return MayBe
+	return NotSure
 }
 func (d *URLDecoder) Decode(text string) (result string, ok bool) {
-	result , err := url.QueryUnescape(text)
+	result, err := url.QueryUnescape(text)
 	if err != nil {
 		log.Println(text, err.Error())
 		return

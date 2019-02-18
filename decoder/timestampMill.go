@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-type UnixTimeStampNanoDecoder struct {
+type UnixTimeStampMillDecoder struct {
 }
 
-func (d *UnixTimeStampNanoDecoder) Sniffer(text string) Possibility {
+func (d *UnixTimeStampMillDecoder) Sniffer(text string) Possibility {
 	_, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
 		return Impossible
 	}
-	if len(text) != 15 {
+	if len(text) != 12 {
 		return AlmostImpossible
 	}
 	if strings.HasPrefix(text, "15") {
@@ -23,12 +23,12 @@ func (d *UnixTimeStampNanoDecoder) Sniffer(text string) Possibility {
 	}
 	return NotSure
 }
-func (d *UnixTimeStampNanoDecoder) Decode(text string) (result string, ok bool) {
+func (d *UnixTimeStampMillDecoder) Decode(text string) (result string, ok bool) {
 	i, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
 		log.Println(text, err.Error())
 		return
 	}
-	t := time.Unix(i/1000000, 0)
+	t := time.Unix(i/1000, 0)
 	return t.Format("2006-01-02 15:04:05"), true
 }

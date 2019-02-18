@@ -6,6 +6,7 @@ type Possibility int
 
 const (
 	Impossible = iota
+	AlmostImpossible
 	MayNotBe
 	NotSure
 	MayBe
@@ -14,9 +15,11 @@ const (
 
 var Decoders = map[string]Decoder{
 	"Unix timestamp":      new(UnixTimeStampDecoder),
-	"Unix timestamp nano": new(UnixTimeStampMillDecoder),
+	"Unix timestamp mill": new(UnixTimeStampMillDecoder),
+	"Unix timestamp nano": new(UnixTimeStampNanoDecoder),
 	"Base64":              new(Base64Decoder),
 	"URL decode":          new(URLDecoder),
+	"Unicode":             new(UnicodeDecoder),
 }
 
 type Decoder interface {
@@ -57,7 +60,7 @@ func Decode(text string) (results *DecodeResults) {
 	results = &DecodeResults{}
 	for name, dcd := range Decoders {
 		level := dcd.Sniffer(text)
-		if level == Impossible {
+		if level <= AlmostImpossible {
 			continue
 		}
 		result, ok := dcd.Decode(text)

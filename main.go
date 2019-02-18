@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func init()  {
+func init() {
 	log.SetFlags(log.Lshortfile | log.Ldate)
 }
 
@@ -24,11 +24,11 @@ func main() {
 	}
 }
 
-func decode(text string)   {
+func decode(text string) {
 	results := decoder.Decode(text)
 	otp := alfred.NewOutput()
 	for _, result := range results.Data() {
-		otp.AddSimpleTip(result.Result , result.DecoderName , "" , result.Result)
+		otp.AddSimpleTip(result.Result, result.DecoderName, result.Result, "")
 	}
 	otp.Show()
 }
