@@ -33,3 +33,7 @@ func (d *UnixTimeStampDecoder) Decode(text string) (result string, ok bool) {
 	t := time.Unix(i, 0)
 	return t.Format("2006-01-02 15:04:05"), true
 }
+
+func (d *UnixTimeStampDecoder) Encode(text string) (result string, ok bool) {
+	return "", false
+}

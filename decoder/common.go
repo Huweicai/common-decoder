@@ -25,6 +25,7 @@ var Decoders = map[string]Decoder{
 type Decoder interface {
 	Sniffer(text string) Possibility
 	Decode(text string) (string, bool)
+	Encode(text string) (string, bool)
 }
 
 type DecodeResults struct {
@@ -68,6 +69,19 @@ func Decode(text string) (results *DecodeResults) {
 			continue
 		}
 		results.Add(level, name, result)
+	}
+	sort.Sort(results)
+	return
+}
+
+func Encode(text string) (results *DecodeResults) {
+	results = &DecodeResults{}
+	for name, dcd := range Decoders {
+		result, ok := dcd.Encode(text)
+		if !ok || text == result || result == "" {
+			continue
+		}
+		results.Add(MayBe, name, result)
 	}
 	sort.Sort(results)
 	return

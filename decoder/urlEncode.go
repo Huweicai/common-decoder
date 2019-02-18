@@ -19,3 +19,8 @@ func (d *URLDecoder) Decode(text string) (result string, ok bool) {
 	}
 	return result, true
 }
+
+func (d *URLDecoder) Encode(text string) (result string, ok bool) {
+	result = url.QueryEscape(text)
+	return result, true
+}

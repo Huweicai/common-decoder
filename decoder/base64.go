@@ -23,3 +23,8 @@ func (d *Base64Decoder) Decode(text string) (result string, ok bool) {
 	}
 	return string(r), true
 }
+
+func (d *Base64Decoder) Encode(text string) (result string, ok bool) {
+	result = base64.StdEncoding.EncodeToString([]byte(text))
+	return result, true
+}

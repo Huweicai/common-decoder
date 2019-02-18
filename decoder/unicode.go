@@ -29,3 +29,9 @@ func (d *UnicodeDecoder) Decode(text string) (result string, ok bool) {
 	}
 	return result, true
 }
+
+func (d *UnicodeDecoder) Encode(text string) (result string, ok bool) {
+	textQuoted := strconv.QuoteToASCII(text)
+	result = textQuoted[1 : len(textQuoted)-1]
+	return result, true
+}
