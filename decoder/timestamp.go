@@ -25,6 +25,7 @@ func (d *UnixTimeStampDecoder) Sniffer(text string) Possibility {
 	}
 	return NotSure
 }
+
 func (d *UnixTimeStampDecoder) Decode(text string) (result string, ok bool) {
 	text = commonTimestampPreHanle(text)
 	i, err := strconv.ParseInt(text, 10, 64)

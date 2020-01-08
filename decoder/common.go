@@ -20,6 +20,8 @@ var Decoders = map[string]Decoder{
 	"Base64":              new(Base64Decoder),
 	"URL decode":          new(URLDecoder),
 	"Unicode":             new(UnicodeDecoder),
+	"Date Time":           new(DateTimeDecoder),
+	"Special Word":        new(SpecialWordDecoder),
 }
 
 type Decoder interface {
