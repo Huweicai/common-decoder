@@ -1,6 +1,7 @@
 package decoder
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -21,13 +22,14 @@ func (d *DateTimeDecoder) Sniffer(text string) Possibility {
 	return NotSure
 }
 
-var defaultTime = "0000-00-00 00:00:00"
+var defaultTime = "00000000000000"
 
 func (d *DateTimeDecoder) Decode(text string) (result string, ok bool) {
+	text = preserveNumbers(text)
 	if len(text) < len(defaultTime) {
 		text += defaultTime[len(text):]
 	}
-	got, err := time.ParseInLocation("2006-01-02 15:04:05", text, time.Local)
+	got, err := time.ParseInLocation("20060102150405", text, time.Local)
 	if err != nil {
 		return "", false
 	}
@@ -37,4 +39,12 @@ func (d *DateTimeDecoder) Decode(text string) (result string, ok bool) {
 
 func (d *DateTimeDecoder) Encode(text string) (result string, ok bool) {
 	return d.Decode(text)
+}
+
+func preserveNumbers(s string) string {
+	reg, err := regexp.Compile("[^0-9]+")
+	if err != nil {
+		return ""
+	}
+	return reg.ReplaceAllString(s, "")
 }

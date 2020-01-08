@@ -15,6 +15,7 @@ func (d *Base64Decoder) Sniffer(text string) Possibility {
 	}
 	return NotSure
 }
+
 func (d *Base64Decoder) Decode(text string) (result string, ok bool) {
 	r, err := base64.StdEncoding.DecodeString(text)
 	if err != nil {

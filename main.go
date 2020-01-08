@@ -5,6 +5,7 @@ import (
 	"common-decoder/decoder"
 	"flag"
 	"log"
+	"strings"
 )
 
 func init() {
@@ -19,11 +20,12 @@ func main() {
 	}
 
 	var output *alfred.Output
+	arg := strings.Join(args[1:], " ")
 	switch args[0] {
 	case "decode":
-		output = decode(args[1])
+		output = decode(arg)
 	case "encode":
-		output = encode(args[1])
+		output = encode(arg)
 	}
 
 	if output == nil || len(output.Items) == 0 {
