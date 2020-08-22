@@ -4,6 +4,7 @@ import (
 	"common-decoder/alfred"
 	"common-decoder/decoder"
 	"flag"
+	"fmt"
 	"log"
 	"strings"
 )
@@ -39,8 +40,10 @@ func main() {
 func decode(text string) *alfred.Output {
 	results := decoder.Decode(text)
 	otp := alfred.NewOutput()
-	for _, result := range results.Data() {
-		otp.AddSimpleTip(result.Result, result.DecoderName, result.Result, "")
+	for _, result := range results.Data {
+		str := fmt.Sprintf("%v", result.Result)
+
+		otp.AddSimpleTip(str, result.DecoderName, str, "")
 	}
 	return otp
 }
@@ -48,8 +51,10 @@ func decode(text string) *alfred.Output {
 func encode(text string) *alfred.Output {
 	results := decoder.Encode(text)
 	otp := alfred.NewOutput()
-	for _, result := range results.Data() {
-		otp.AddSimpleTip(result.Result, result.DecoderName, result.Result, "")
+	for _, result := range results.Data {
+		str := fmt.Sprintf("%v", result.Result)
+
+		otp.AddSimpleTip(str, result.DecoderName, str, "")
 	}
 	return otp
 }

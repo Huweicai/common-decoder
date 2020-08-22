@@ -24,7 +24,7 @@ func (d *DateTimeDecoder) Sniffer(text string) Possibility {
 
 var defaultTime = "00000000000000"
 
-func (d *DateTimeDecoder) Decode(text string) (result string, ok bool) {
+func (d *DateTimeDecoder) Decode(text string) (result interface{}, ok bool) {
 	text = preserveNumbers(text)
 	if len(text) < len(defaultTime) {
 		text += defaultTime[len(text):]
@@ -37,7 +37,7 @@ func (d *DateTimeDecoder) Decode(text string) (result string, ok bool) {
 	return strconv.FormatInt(got.Unix(), 10), true
 }
 
-func (d *DateTimeDecoder) Encode(text string) (result string, ok bool) {
+func (d *DateTimeDecoder) Encode(text string) (result interface{}, ok bool) {
 	return d.Decode(text)
 }
 
@@ -46,5 +46,6 @@ func preserveNumbers(s string) string {
 	if err != nil {
 		return ""
 	}
+
 	return reg.ReplaceAllString(s, "")
 }

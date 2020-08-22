@@ -24,7 +24,7 @@ func (d *UnixTimeStampMillDecoder) Sniffer(text string) Possibility {
 	}
 	return NotSure
 }
-func (d *UnixTimeStampMillDecoder) Decode(text string) (result string, ok bool) {
+func (d *UnixTimeStampMillDecoder) Decode(text string) (result interface{}, ok bool) {
 	text = commonTimestampPreHanle(text)
 	i, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
@@ -35,6 +35,6 @@ func (d *UnixTimeStampMillDecoder) Decode(text string) (result string, ok bool) 
 	return t.Format("2006-01-02 15:04:05"), true
 }
 
-func (d *UnixTimeStampMillDecoder) Encode(text string) (result string, ok bool) {
+func (d *UnixTimeStampMillDecoder) Encode(text string) (result interface{}, ok bool) {
 	return "", false
 }

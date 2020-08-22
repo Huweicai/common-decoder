@@ -15,22 +15,26 @@ func (d *UnicodeDecoder) Sniffer(text string) Possibility {
 	}
 	return NotSure
 }
-func (d *UnicodeDecoder) Decode(text string) (result string, ok bool) {
+func (d *UnicodeDecoder) Decode(text string) (interface{}, bool) {
+	ret := ""
 	sUnicodev := strings.Split(text, "\\u")
 	for _, v := range sUnicodev {
 		if len(v) < 1 {
 			continue
 		}
+
 		temp, err := strconv.ParseInt(v, 16, 32)
 		if err != nil {
-			return
+			return "", false
 		}
-		result += fmt.Sprintf("%c", temp)
+
+		ret += fmt.Sprintf("%c", temp)
 	}
-	return result, true
+
+	return ret, true
 }
 
-func (d *UnicodeDecoder) Encode(text string) (result string, ok bool) {
+func (d *UnicodeDecoder) Encode(text string) (result interface{}, ok bool) {
 	textQuoted := strconv.QuoteToASCII(text)
 	result = textQuoted[1 : len(textQuoted)-1]
 	return result, true

@@ -12,7 +12,7 @@ func (d *SpecialWordDecoder) Sniffer(text string) Possibility {
 	return NotSure
 }
 
-func (d *SpecialWordDecoder) Decode(text string) (result string, ok bool) {
+func (d *SpecialWordDecoder) Decode(text string) (result interface{}, ok bool) {
 	switch text {
 	case "now":
 		return strconv.FormatInt(time.Now().Unix(), 10), true
@@ -21,6 +21,6 @@ func (d *SpecialWordDecoder) Decode(text string) (result string, ok bool) {
 	}
 }
 
-func (d *SpecialWordDecoder) Encode(text string) (result string, ok bool) {
+func (d *SpecialWordDecoder) Encode(text string) (result interface{}, ok bool) {
 	return d.Decode(text)
 }

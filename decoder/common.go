@@ -1,6 +1,10 @@
 package decoder
 
-import "sort"
+import (
+	"reflect"
+	"sort"
+	"strings"
+)
 
 type Possibility int
 
@@ -13,78 +17,127 @@ const (
 	MustBe
 )
 
-var Decoders = map[string]Decoder{
-	"Unix timestamp":      new(UnixTimeStampDecoder),
-	"Unix timestamp mill": new(UnixTimeStampMillDecoder),
-	"Unix timestamp nano": new(UnixTimeStampNanoDecoder),
-	"Base64":              new(Base64Decoder),
-	"URL decode":          new(URLDecoder),
-	"Unicode":             new(UnicodeDecoder),
-	"Date Time":           new(DateTimeDecoder),
-	"Special Word":        new(SpecialWordDecoder),
+var Decoders = []Decoder{
+	new(UnixTimeStampDecoder),
+	new(UnixTimeStampMillDecoder),
+	new(UnixTimeStampNanoDecoder),
+	new(Base64Decoder),
+	new(URLDecoder),
+	new(UnicodeDecoder),
+	new(DateTimeDecoder),
+	new(SpecialWordDecoder),
+	new(HexDecoder),
 }
 
 type Decoder interface {
 	Sniffer(text string) Possibility
-	Decode(text string) (string, bool)
-	Encode(text string) (string, bool)
+	Decode(text string) (interface{}, bool) // string, []*DecodeResult, *DecodeResult are all acceptable
+	Encode(text string) (interface{}, bool)
 }
 
 type DecodeResults struct {
-	data []DecodeResult
+	Data []*DecodeResult
 }
 
 func (d *DecodeResults) Less(i, j int) bool {
-	return d.data[i].Possibility < d.data[j].Possibility
+	return d.Data[i].Possibility < d.Data[j].Possibility
 }
 
 func (d *DecodeResults) Len() int {
-	return len(d.data)
+	return len(d.Data)
 }
 func (d *DecodeResults) Swap(i, j int) {
-	d.data[i], d.data[j] = d.data[j], d.data[i]
+	d.Data[i], d.Data[j] = d.Data[j], d.Data[i]
 }
 
-func (d *DecodeResults) Data() []DecodeResult {
-	return d.data
+func (d *DecodeResults) Add(level Possibility, name string, result interface{}) {
+	switch t := result.(type) {
+	case []*DecodeResult:
+		for _, v := range t {
+			if v.Possibility == 0 {
+				v.Possibility = level
+			}
+
+			// patch decoder name if not exist
+			if v.DecoderName == "" {
+				v.DecoderName = name
+			}
+		}
+		d.Data = append(d.Data, t...)
+
+	case *DecodeResult:
+		// patch decoder name if not exist
+		if t.DecoderName == "" {
+			t.DecoderName = name
+		}
+		if t.Possibility == 0 {
+			t.Possibility = level
+		}
+
+		d.Data = append(d.Data, t)
+	case string:
+		d.Data = append(d.Data, &DecodeResult{
+			level,
+			name,
+			t})
+	}
 }
 
-func (d *DecodeResults) Add(level Possibility, name, result string) {
-	d.data = append(d.data, DecodeResult{level, name, result})
+type Namer interface {
+	Name() string
 }
 
 type DecodeResult struct {
 	Possibility Possibility
 	DecoderName string
-	Result      string
+	Result      interface{}
+}
+
+func GetDecoderName(i interface{}) string {
+	if namer, ok := i.(Namer); ok {
+		return namer.Name()
+	}
+
+	name := reflect.TypeOf(i).Elem().Name()
+	return strings.TrimSuffix(name, "Decoder")
 }
 
 func Decode(text string) (results *DecodeResults) {
 	results = &DecodeResults{}
-	for name, dcd := range Decoders {
-		level := dcd.Sniffer(text)
+
+	for _, decoder := range Decoders {
+		level := decoder.Sniffer(text)
 		if level <= AlmostImpossible {
 			continue
 		}
-		result, ok := dcd.Decode(text)
+
+		result, ok := decoder.Decode(text)
 		if !ok || text == result {
 			continue
 		}
+
+		name := GetDecoderName(decoder)
+
 		results.Add(level, name, result)
 	}
+
 	sort.Sort(results)
 	return
 }
 
 func Encode(text string) (results *DecodeResults) {
 	results = &DecodeResults{}
-	for name, dcd := range Decoders {
-		result, ok := dcd.Encode(text)
+	for _, decoder := range Decoders {
+		result, ok := decoder.Encode(text)
 		if !ok || text == result || result == "" {
 			continue
 		}
+
+		name := GetDecoderName(decoder)
+
 		results.Add(MayBe, name, result)
 	}
+
 	sort.Sort(results)
 	return
 }
