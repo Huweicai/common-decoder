@@ -1,6 +1,8 @@
 package decoder
 
 import (
+	"encoding/json"
+	"log"
 	"reflect"
 	"sort"
 	"strings"
@@ -22,11 +24,13 @@ var Decoders = []Decoder{
 	new(UnixTimeStampMillDecoder),
 	new(UnixTimeStampNanoDecoder),
 	new(Base64Decoder),
+	new(Base64URLDecoder),
 	new(URLDecoder),
 	new(UnicodeDecoder),
 	new(DateTimeDecoder),
 	new(SpecialWordDecoder),
 	new(HexDecoder),
+	new(JWTDecoder),
 }
 
 type Decoder interface {
@@ -80,6 +84,16 @@ func (d *DecodeResults) Add(level Possibility, name string, result interface{}) 
 			level,
 			name,
 			t})
+	default:
+		ret, err := json.Marshal(t)
+		if err != nil {
+			log.Println("unexpected result", err, t)
+			break
+		}
+		d.Data = append(d.Data, &DecodeResult{
+			level,
+			name,
+			string(ret)})
 	}
 }
 
