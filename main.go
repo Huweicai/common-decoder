@@ -1,12 +1,13 @@
 package main
 
 import (
-	"common-decoder/alfred"
-	"common-decoder/decoder"
 	"flag"
 	"fmt"
 	"log"
 	"strings"
+
+	"github.com/Huweicai/common-decoder/alfred"
+	"github.com/Huweicai/common-decoder/decoder"
 )
 
 func init() {

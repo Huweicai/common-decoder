@@ -1,4 +1,4 @@
-module common-decoder
+module github.com/Huweicai/common-decoder
 
 go 1.13
 
