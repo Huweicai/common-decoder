@@ -31,6 +31,7 @@ var Decoders = []Decoder{
 	new(SpecialWordDecoder),
 	new(HexDecoder),
 	new(JWTDecoder),
+	new(CIDRDecoder),
 }
 
 type Decoder interface {
