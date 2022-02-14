@@ -2,3 +2,4 @@
 config.yaml
 common-decoder
 local_deploy.sh
+.DS_Store

@@ -15,7 +15,15 @@ func (d *SpecialWordDecoder) Sniffer(text string) Possibility {
 func (d *SpecialWordDecoder) Decode(text string) (result interface{}, ok bool) {
 	switch text {
 	case "now":
-		return strconv.FormatInt(time.Now().Unix(), 10), true
+		now := time.Now()
+		return []*DecodeResult{
+			{
+				Result: strconv.FormatInt(now.Unix(), 10),
+			},
+			{
+				Result: now.Format("2006-01-02 15:04:05"),
+			},
+		}, true
 	default:
 		return "", false
 	}
