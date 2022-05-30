@@ -33,6 +33,7 @@ var Decoders = []Decoder{
 	new(DecimalDecoder),
 	new(JWTDecoder),
 	new(CIDRDecoder),
+	new(StaticConfigDecoder),
 }
 
 type Decoder interface {
@@ -106,7 +107,8 @@ type Namer interface {
 type DecodeResult struct {
 	Possibility Possibility
 	DecoderName string
-	Result      interface{}
+	// Result will be formatted to string
+	Result interface{}
 }
 
 func GetDecoderName(i interface{}) string {
