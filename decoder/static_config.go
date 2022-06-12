@@ -117,7 +117,7 @@ func (d *StaticConfigDecoder) Decode(text string) (result interface{}, ok bool) 
 
 	return &DecodeResult{
 		Possibility: MustBe,
-		Result:      strings.Join(ret, " "),
+		Result:      strings.Join(ret, " | "),
 	}, len(ret) != 0
 }
 

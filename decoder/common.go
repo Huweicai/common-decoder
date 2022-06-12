@@ -34,6 +34,7 @@ var Decoders = []Decoder{
 	new(JWTDecoder),
 	new(CIDRDecoder),
 	new(StaticConfigDecoder),
+	new(UnitDecoder),
 }
 
 type Decoder interface {
