@@ -20,9 +20,10 @@ func (d *UnitDecoder) Sniffer(text string) Possibility {
 	return NotSure
 }
 
-var unitRegex = regexp.MustCompile(`(\d+\.*\d*)(\w{1,6})`)
+var unitRegex = regexp.MustCompile(`(\d+\.*\d*)(\S{1,6})`)
 
 type unitGroup struct {
+	name             string
 	unitCoefficients map[string]float64
 	showUnits        []string
 }
@@ -30,6 +31,7 @@ type unitGroup struct {
 func NewUnitGroups() []*unitGroup {
 	return []*unitGroup{
 		{
+			name: "STORAGE",
 			unitCoefficients: map[string]float64{
 				"b": 1,
 				"B": 8,
@@ -48,23 +50,55 @@ func NewUnitGroups() []*unitGroup {
 				"PiB": 1024 * 1024 * 1024 * 1024 * 1024 * 8,
 				"EiB": 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 8,
 			},
-			showUnits: []string{"KB", "MB", "GB", "TB", "PB"},
+			showUnits: []string{"KB", "MB", "GiB", "GB", "TB", "TiB", "PB"},
 		},
 		{
+			name: "TIME",
 			unitCoefficients: map[string]float64{
 				"ns": float64(time.Nanosecond),
 				"us": float64(time.Microsecond),
 				"μs": float64(time.Microsecond),
 
-				"ms":  float64(time.Millisecond),
-				"s":   float64(time.Second),
-				"min": float64(time.Minute),
-				"h":   float64(time.Hour),
+				"ms":   float64(time.Millisecond),
+				"s":    float64(time.Second),
+				"min":  float64(time.Minute),
+				"h":    float64(time.Hour),
+				"day":  float64(24 * time.Hour),
+				"year": float64(365 * 24 * time.Hour),
 			},
-			showUnits: []string{"ms", "s", "min", "h"},
+			showUnits: []string{"ms", "s", "min", "h", "day", "year"},
+		},
+		{
+			name: "MONEY",
+			unitCoefficients: map[string]float64{
+				"￥":   1,
+				"万￥":  10_000,
+				"十万￥": 100_000,
+				"百万￥": 1_000_000,
+				"千万￥": 10_000_000,
+				"亿￥":  100_000_000,
+				"十亿￥": 1_000_000_000,
+				"百亿￥": 10_000_000_000,
+				"千亿￥": 100_000_000_000,
+				"万亿￥": 1_000_000_000_000,
+				"$":   dollarToRMBate * 1,
+				"万$":  dollarToRMBate * 10_000,
+				"十万$": dollarToRMBate * 100_000,
+				"百万$": dollarToRMBate * 1_000_000,
+				"千万$": dollarToRMBate * 10_000_000,
+				"亿$":  dollarToRMBate * 100_000_000,
+				"十亿$": dollarToRMBate * 1_000_000_000,
+				"百亿$": dollarToRMBate * 10_000_000_000,
+				"千亿$": dollarToRMBate * 100_000_000_000,
+				"万亿$": dollarToRMBate * 1_000_000_000_000,
+			},
+			showUnits: []string{"￥", "万￥", "亿￥", "万亿￥", "亿$", "万亿$"},
 		},
 	}
 }
+
+// approximately 7
+const dollarToRMBate = 7
 
 func (d *UnitDecoder) Decode(text string) (interface{}, bool) {
 	ret := unitRegex.FindStringSubmatch(text)
