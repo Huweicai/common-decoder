@@ -3,7 +3,6 @@ package decoder
 import (
 	"log"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -16,12 +15,11 @@ func (d *UnixTimeStampNanoDecoder) Sniffer(text string) Possibility {
 	if err != nil {
 		return Impossible
 	}
-	if len(text) != 16 {
+
+	if len(text) != 19 {
 		return AlmostImpossible
 	}
-	if strings.HasPrefix(text, "15") {
-		return MayBe
-	}
+
 	return NotSure
 }
 func (d *UnixTimeStampNanoDecoder) Decode(text string) (result interface{}, ok bool) {
@@ -31,7 +29,8 @@ func (d *UnixTimeStampNanoDecoder) Decode(text string) (result interface{}, ok b
 		log.Println(text, err.Error())
 		return
 	}
-	t := time.Unix(i/1000000, 0)
+
+	t := time.Unix(i/1000_0000_000, 0)
 	return t.Format("2006-01-02 15:04:05"), true
 }
 
