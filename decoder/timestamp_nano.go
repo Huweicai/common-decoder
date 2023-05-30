@@ -30,7 +30,7 @@ func (d *UnixTimeStampNanoDecoder) Decode(text string) (result interface{}, ok b
 		return
 	}
 
-	t := time.Unix(i/1000_0000_000, 0)
+	t := time.Unix(i/100_0000_000, 0)
 	return t.Format("2006-01-02 15:04:05"), true
 }
 
