@@ -11,15 +11,11 @@ type HexDecoder struct {
 }
 
 func (h HexDecoder) Sniffer(text string) Possibility {
-	if !strings.HasPrefix(text, "0x") {
-		return Impossible
-	}
-
 	return MayBe
 }
 
 func (h HexDecoder) Decode(text string) (interface{}, bool) {
-	text = strings.TrimPrefix(text, "0x")
+	text = strings.Replace(strings.TrimPrefix(text, "0x"), " ", "", -1)
 	tmp, err := hex.DecodeString(text)
 	if err != nil {
 		return nil, false

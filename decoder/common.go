@@ -30,6 +30,7 @@ var Decoders = []Decoder{
 	new(DateTimeDecoder),
 	new(SpecialWordDecoder),
 	new(HexDecoder),
+	new(BinaryDecoder),
 	new(DecimalDecoder),
 	new(JWTDecoder),
 	new(CIDRDecoder),
