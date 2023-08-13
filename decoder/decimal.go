@@ -23,7 +23,7 @@ func (h DecimalDecoder) Decode(text string) (interface{}, bool) {
 		return nil, false
 	}
 
-	return []*DecodeResult{
+	results := []*DecodeResult{
 		{
 			DecoderName: "Decimal to Binary",
 			Result:      fmt.Sprintf("%b", i),
@@ -32,7 +32,16 @@ func (h DecimalDecoder) Decode(text string) (interface{}, bool) {
 			DecoderName: "Decimal to Hex",
 			Result:      fmt.Sprintf("%x", i),
 		},
-	}, true
+	}
+
+	if 0 <= i && i <= 126 {
+		results = append(results, &DecodeResult{
+			DecoderName: "Decimal to ASCII",
+			Result:      fmt.Sprintf("%c", i),
+		})
+	}
+
+	return results, true
 }
 
 func (h DecimalDecoder) Encode(text string) (interface{}, bool) {

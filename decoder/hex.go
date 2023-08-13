@@ -23,7 +23,7 @@ func (h HexDecoder) Decode(text string) (interface{}, bool) {
 
 	binary := strings.TrimPrefix(fmt.Sprintf("%.8b", tmp), "[")
 	binary = strings.TrimSuffix(binary, "]")
-	ret := []*DecodeResult{
+	results := []*DecodeResult{
 		{
 			DecoderName: "Hex to Binary",
 			Result:      binary,
@@ -31,10 +31,17 @@ func (h HexDecoder) Decode(text string) (interface{}, bool) {
 
 	decimal, err := strconv.ParseInt(text, 16, 64)
 	if err != nil {
-		return ret, true
+		return results, true
 	}
 
-	return append(ret, &DecodeResult{
+	if 0 <= decimal && decimal <= 126 {
+		results = append(results, &DecodeResult{
+			DecoderName: "Hex to ASCII",
+			Result:      fmt.Sprintf("%c", decimal),
+		})
+	}
+
+	return append(results, &DecodeResult{
 		DecoderName: "Hex to Decimal",
 		Result:      decimal,
 	}), true

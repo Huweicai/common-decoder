@@ -20,7 +20,7 @@ func (h BinaryDecoder) Decode(text string) (interface{}, bool) {
 		return nil, false
 	}
 
-	return []*DecodeResult{
+	results := []*DecodeResult{
 		{
 			DecoderName: "Binary to Decimal",
 			Result:      decimal,
@@ -29,7 +29,16 @@ func (h BinaryDecoder) Decode(text string) (interface{}, bool) {
 			DecoderName: "Binary to Hex",
 			Result:      fmt.Sprintf("%x", decimal),
 		},
-	}, true
+	}
+
+	if 0 <= decimal && decimal <= 126 {
+		results = append(results, &DecodeResult{
+			DecoderName: "Decimal to ASCII",
+			Result:      fmt.Sprintf("%c", decimal),
+		})
+	}
+
+	return results, true
 }
 
 func (h BinaryDecoder) Encode(text string) (interface{}, bool) {
