@@ -36,6 +36,7 @@ var Decoders = []Decoder{
 	new(CIDRDecoder),
 	new(StaticConfigDecoder),
 	new(UnitDecoder),
+	new(DemangleDecoder),
 }
 
 type Decoder interface {
