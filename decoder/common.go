@@ -21,8 +21,6 @@ const (
 
 var Decoders = []Decoder{
 	new(UnixTimeStampDecoder),
-	new(UnixTimeStampMillDecoder),
-	new(UnixTimeStampNanoDecoder),
 	new(Base64Decoder),
 	new(Base64URLDecoder),
 	new(URLDecoder),
