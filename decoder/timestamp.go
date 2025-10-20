@@ -28,13 +28,13 @@ func (d *UnixTimeStampDecoder) parseUnixTimestamp(text string) (time.Time, strin
 		t = time.Unix(i, 0)
 		decoderName = "Unix Timestamp"
 	case length <= 13:
-		t = time.Unix(0, i*int64(time.Millisecond)).UTC()
+		t = time.Unix(0, i*int64(time.Millisecond))
 		decoderName = "Unix Timestamp Milli"
 	case length <= 16:
-		t = time.Unix(0, i*int64(time.Microsecond)).UTC()
+		t = time.Unix(0, i*int64(time.Microsecond))
 		decoderName = "Unix Timestamp Micro"
 	case length <= 19:
-		t = time.Unix(0, i).UTC()
+		t = time.Unix(0, i)
 		decoderName = "Unix Timestamp Nano"
 	default:
 		log.Println(text, "unsupported timestamp length")

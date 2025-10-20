@@ -24,6 +24,18 @@ func (d *SpecialWordDecoder) Decode(text string) (result interface{}, ok bool) {
 				Result: now.Format("2006-01-02 15:04:05"),
 			},
 		}, true
+
+	case "today":
+		today := time.Now().Truncate(24 * time.Hour)
+		return []*DecodeResult{
+			{
+				Result: strconv.FormatInt(today.Unix(), 10),
+			},
+			{
+				Result: today.Format("2006-01-02"),
+			},
+		}, true
+
 	default:
 		return "", false
 	}
