@@ -2,40 +2,37 @@ package decoder
 
 import (
 	"strconv"
+	"strings"
 	"time"
 )
 
-type SpecialWordDecoder struct {
-}
+type SpecialWordDecoder struct{}
 
 func (d *SpecialWordDecoder) Sniffer(text string) Possibility {
 	return NotSure
 }
 
-func (d *SpecialWordDecoder) Decode(text string) (result interface{}, ok bool) {
-	switch text {
-	case "now":
-		now := time.Now()
-		return []*DecodeResult{
-			{
-				Result: strconv.FormatInt(now.Unix(), 10),
-			},
-			{
-				Result: now.Format("2006-01-02 15:04:05"),
-			},
-		}, true
+func buildSpecialWordResults(t time.Time) []*DecodeResult {
+	return []*DecodeResult{
+		{Result: strconv.FormatInt(t.Unix(), 10)},
+		{Result: strconv.FormatInt(t.UnixNano(), 10)},
+		{Result: t.Format("2006-01-02 15:04:05")},
+	}
+}
 
+func (d *SpecialWordDecoder) Decode(text string) (result interface{}, ok bool) {
+	switch strings.ToLower(strings.TrimSpace(text)) {
+	case "now":
+		return buildSpecialWordResults(time.Now()), true
 	case "today":
 		today := time.Now().Truncate(24 * time.Hour)
-		return []*DecodeResult{
-			{
-				Result: strconv.FormatInt(today.Unix(), 10),
-			},
-			{
-				Result: today.Format("2006-01-02"),
-			},
-		}, true
-
+		return buildSpecialWordResults(today), true
+	case "yesterday":
+		yesterday := time.Now().Add(-24 * time.Hour).Truncate(24 * time.Hour)
+		return buildSpecialWordResults(yesterday), true
+	case "tomorrow", "tommorow":
+		tomorrow := time.Now().Add(24 * time.Hour).Truncate(24 * time.Hour)
+		return buildSpecialWordResults(tomorrow), true
 	default:
 		return "", false
 	}

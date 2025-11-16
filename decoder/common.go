@@ -27,6 +27,7 @@ var Decoders = []Decoder{
 	new(UnicodeDecoder),
 	new(DateTimeDecoder),
 	new(SpecialWordDecoder),
+	new(ExchangeTradingTimeDecoder),
 	new(HexDecoder),
 	new(BinaryDecoder),
 	new(DecimalDecoder),
